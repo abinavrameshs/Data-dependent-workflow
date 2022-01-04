@@ -1,0 +1,60 @@
+hdfs dfs -mkdir /user/$USER/ds_input1
+hdfs dfs -ls /user/$USER/
+
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-01
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-02
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-03
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-04
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-05
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-06
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-07
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-08
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-09
+hdfs dfs -mkdir /user/$USER/ds_input1/2021-12-10
+
+hdfs dfs -mkdir /user/$USER/daily_feed
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-01
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-02
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-03
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-04
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-05
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-06
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-07
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-08
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-09
+hdfs dfs -mkdir /user/$USER/daily_feed/2021-12-10
+
+hdfs dfs -mkdir /user/$USER/output_feed
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-01
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-02
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-03
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-04
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-05
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-06
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-07
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-08
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-09
+hdfs dfs -mkdir /user/$USER/output_feed/2021-12-10
+
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-01/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-02/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-03/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-04/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-05/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-06/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-07/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-08/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-09/_trigger
+hdfs dfs -touchz /user/$USER/ds_input1/2021-12-10/_trigger
+
+
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-01/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-02/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-03/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-04/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-05/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-06/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-07/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-08/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-09/_SUCCESS
+hdfs dfs -touchz /user/$USER/daily_feed/2021-12-10/_SUCCESS

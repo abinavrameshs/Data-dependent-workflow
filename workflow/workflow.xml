@@ -1,0 +1,146 @@
+<workflow-app name="data_dependent_wf" xmlns="uri:oozie:workflow:0.5">
+
+<global>
+  <configuration>
+        <property>
+            <name>oozie.launcher.yarn.app.mapreduce.am.env</name>
+            <value>SPARK_HOME=/usr/lib/spark</value>
+        </property>
+        <property>
+            <name>oozie.launcher.mapred.child.env</name>
+            <value>SPARK_HOME=/usr/lib/spark</value>
+        </property>
+        <property>
+            <name>oozie.action.sharelib.for.spark</name>
+            <value>spark,hive</value>
+        </property>
+        <!--property>
+            <name>oozie.action.max.output.data</name>
+            <value>2048</value>
+            <description>
+                Max size in characters for output data.
+            </description>
+        </property-->
+    </configuration>
+</global>
+
+<credentials>
+    <credential name="hcat" type="hcat">
+        <property>
+            <name>hcat.metastore.uri</name>
+            <value>${hcatUri}</value>
+        </property>
+        <property>
+            <name>hcat.metastore.principal</name>
+        <value>${hcatPrinciple}</value>
+        </property>
+    </credential>
+     <credential name="hs2-creds" type="hive2">
+      <property>
+        <name>hive2.server.principal</name>
+          <value>${jdbcPrincipal}</value>
+      </property>
+      <property>
+       <name>hive2.jdbc.url</name>
+         <value>${jdbcURL}</value>
+      </property>
+    </credential>
+</credentials>
+
+<start to="Shell_job"/>
+
+
+<!--action name="Hive_job" cred="hs2-creds">
+   <hive2 xmlns="uri:oozie:hive2-action:0.2">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <job-xml>${hiveConfig}</job-xml>
+        <jdbc-url>${jdbcURL}</jdbc-url>
+        <script>${hive_script}</script>
+        <param>startdt=${startdt}</param>
+        <param>enddt=${enddt}</param>
+        <param>mapdt=${mapdt}</param>
+        <file>${hiveConfig}</file>
+    </hive2>
+    <ok to="Impala_job"/>
+    <error to="EMAIL_FAIL"/>
+</action-->
+
+
+<action name="Shell_job" cred="hcat,hs2-creds">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <exec>${test_shell_script}</exec>
+            <argument>${start_date}</argument>
+            <argument>${end_date}</argument>
+            <argument>${keytab_path}</argument>
+            <argument>${nominalTime}</argument>
+            <argument>${LAST_MONTH}</argument>
+            <argument>${TWO_DAYS_PREVIOUS}</argument>
+            <argument>${ACTUAL_TIME}</argument>
+            <argument>${DATA_IN_EVENT_DS_INPUT1}</argument>
+            <argument>${DATA_IN_EVENT_DAILY_FEED}</argument>
+            <argument>${DATA_OUT}</argument>
+            <argument>${CURRENT_DAY}</argument>
+            <argument>${nameNode}</argument>
+            <argument>${jobTracker}</argument>
+            <argument>${launchUser}</argument>
+            <file>${hiveSite}#hive-site.xml</file>
+            <file>${hiveConfig}#hive-config.xml</file>
+            <file>${keytab_path}#TEST_USER.keytab</file>
+            <file>${test_shell_script}#test_shell_script.sh</file>
+           
+        </shell>
+        <ok to="EMAIL_SUCCESS"/>
+        <error to="EMAIL_FAIL"/>
+    </action>
+
+
+
+<action name="EMAIL_FAIL">
+  <email xmlns="uri:oozie:email-action:0.2">
+      <to>${email_list}</to>
+      <subject>FAILURE !! Data dependent WF:${wf:id()}</subject>
+      <body>
+Hello All,
+
+The wf ${wf:id()} Failed because of the following error : 
+${wf:errorMessage(wf:lastErrorNode())}
+
+Yours,
+
+Oozie Bot
+</body>
+  </email>
+  <ok to="KILL"/>
+  <error to="KILL"/>
+</action>
+
+<!--Email action SUCCESS-->
+<action name="EMAIL_SUCCESS">
+  <email xmlns="uri:oozie:email-action:0.1">
+    <to>${email_list}</to>
+    <subject>SUCCESS!! Data dependent WF:${wf:id()}</subject>
+    <body>
+Hello All,
+
+The wf ${wf:id()} successfully completed.
+
+Yours,
+
+Oozie Bot
+    </body>
+  </email>
+  <ok to="END"/>
+  <error to="KILL"/>
+</action>
+
+
+<kill name="KILL">
+  <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+
+<end name="END"/>
+
+</workflow-app>

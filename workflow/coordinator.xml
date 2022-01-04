@@ -1,0 +1,111 @@
+<coordinator-app name="${workflowName}" start="${start_date}" end="${end_date}" timezone="UTC" frequency="${coord:days(1)}" xmlns="uri:oozie:coordinator:0.4">
+	<controls>
+		<concurrency>${concurrency}</concurrency>
+		<execution>${execution}</execution>
+	</controls>
+	<datasets>
+	<!--Checks for _trigger file in the folder-->
+	<dataset name="ds_input1" frequency="${coord:days(1)}" timezone="UTC" initial-instance="2021-12-01T02:00Z">
+		<uri-template>
+		${nameNode}/user/${launchUser}/ds_input1/${YEAR}-${MONTH}-${DAY}
+		</uri-template>
+		<done-flag>_trigger</done-flag>
+	</dataset>
+	<!--Checks for _SUCCESS file in the folder-->
+	<dataset name="daily_feed" frequency="${coord:days(1)}" timezone="UTC"
+	initial-instance="2021-12-01T02:00Z">
+		<uri-template>
+		${nameNode}/user/${launchUser}/daily_feed/${YEAR}-${MONTH}-${DAY}
+		</uri-template>
+	</dataset>
+	<dataset name="output_feed" frequency="${coord:days(1)}" timezone="UTC"
+	initial-instance="2021-12-01T02:00Z">
+		<uri-template>
+		${nameNode}/user/${launchUser}/output_feed/${YEAR}-${MONTH}-${DAY}
+		</uri-template>
+	</dataset>
+</datasets>
+<input-events>
+	<data-in name="ds_input1_input_event" dataset="ds_input1">
+		<start-instance>${coord:current(-3)}</start-instance>
+		<end-instance>${coord:current(-1)}</end-instance>
+	</data-in>
+	<data-in name="daily_feed_input_event" dataset="daily_feed">
+		<start-instance>${coord:current(-2)}</start-instance>
+		<end-instance>${coord:current(-1)}</end-instance>
+	</data-in>
+</input-events>
+<output-events>
+	<data-out name="event_output1" dataset="output_feed">
+	<instance>${coord:current(0)}</instance>
+	</data-out>
+</output-events>
+
+	<action>
+		<workflow>
+			<app-path>${workflowPath}</app-path>
+			<configuration>
+				<property>
+					<name>oozie.use.system.libpath</name>
+					<value>true</value>
+				</property>
+				<property>
+					<name>start_date</name>
+					<value>${start_date}</value>
+				</property>
+				<property>
+					<name>end_date</name>
+					<value>${end_date}</value>
+				</property>
+
+				<property>
+                    <name>nominalTime</name>
+                    <value>${coord:nominalTime()}</value>
+                </property>
+				<property>
+                    <name>CURRENT_DAY</name>
+                    <value>${coord:formatTime(coord:nominalTime(), 'yyyy-MM-dd')}</value>
+                </property>
+                <property>
+                    <name>LAST_MONTH</name>
+                    <value>${coord:formatTime(coord:dateOffset(coord:nominalTime(), -1, 'MONTH'), 'yyyy-MM')}</value>
+                </property>
+                <property>
+                    <name>TWO_DAYS_PREVIOUS</name>
+                    <value>${coord:formatTime(coord:dateOffset(coord:nominalTime(), -2, 'DAY'), 'yyyy-MM-dd')}</value>
+                </property>
+				<property>
+                    <name>ACTUAL_TIME</name>
+                    <value>${coord:actualTime()}</value>
+                </property>
+				<property>
+                    <name>DATA_IN_EVENT_DS_INPUT1</name>
+                    <value>${coord:dataIn("ds_input1_input_event")}</value>
+                </property>
+				<property>
+                    <name>DATA_IN_EVENT_DAILY_FEED</name>
+                    <value>${coord:dataIn("daily_feed_input_event")}</value>
+                </property>
+				<property>
+                    <name>DATA_OUT</name>
+                    <value>${coord:dataOut("event_output1")}</value>
+                </property>
+				<property>
+                    <name>nameNode</name>
+                    <value>${nameNode}</value>
+                </property>
+				<property>
+                    <name>jobTracker</name>
+                    <value>${jobTracker}</value>
+                </property>
+				<property>
+                    <name>launchUser</name>
+                    <value>${launchUser}</value>
+                </property>
+				
+				
+
+			</configuration>
+		</workflow>
+	</action>
+</coordinator-app>
